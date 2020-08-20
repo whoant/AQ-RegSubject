@@ -257,8 +257,10 @@ Func _Login($times = 0)
 	Local $sDataToSend = _HttpRequest_DataFormCreate($aForm)
 
 	$http = _HttpRequest(2, "/default.aspx", $sDataToSend, $_COOOKIE)
-
-	$__VIEWSTATE = StringRegExp($http, 'name="__VIEWSTATE" id="__VIEWSTATE" value="(.*?)"', 3)[0]
+	If (StringInStr($http, "The service is unavailable") > 0) Then
+		_Text("[LOGIN] Hệ thống quá tải, đang thử lại lần " & $times + 1 & "/" & $MAX_TIMES)
+		_Login($times + 1)
+	EndIf
 
 	If (StringInStr($http, "ctl00_ContentPlaceHolder1_ctl00_lblError") > 0) Then
 
@@ -288,6 +290,7 @@ Func _Login($times = 0)
 		EndIf
 
 	ElseIf (StringInStr($http, "ctl00_Header1_Logout1_lbtnChangePass") > 0) Then
+		$__VIEWSTATE = StringRegExp($http, 'name="__VIEWSTATE" id="__VIEWSTATE" value="(.*?)"', 3)[0]
 		$tach = StringRegExp($http, 'style="color:#FF3300;font-size:12px;font-weight:bold;">Chào (.*?)<', 3)
 
 		If (UBound($tach) <= 0) Then Return _Login()
@@ -343,7 +346,7 @@ Func _Captcha($times = 0)
 	$captcha = StringRegExp($http, 'font-style:italic;">(.*?)</span>', 3)
 	If UBound($captcha) > 0 Then
 
-		$__VIEWSTATE = StringRegExp(StringReplace($http, @CRLF, ""), 'name="__VIEWSTATE" id="__VIEWSTATE" value="(.*?)"', 3)[0]
+		$__VIEWSTATE = StringRegExp($http, 'name="__VIEWSTATE" id="__VIEWSTATE" value="(.*?)"', 3)[0]
 		_Text("[CAPTCHA] Đã tách được captcha " & $captcha[0])
 		_Text("[CAPTCHA] Đang vượt captcha")
 
@@ -352,7 +355,7 @@ Func _Captcha($times = 0)
 
 		$http = _HttpRequest(2, "/default.aspx", $sDataToSend, $_COOOKIE)
 		If (StringInStr($http, "ctl00_ContentPlaceHolder1_ctl00_lblTenDangNhap") > 0) Then
-			$__VIEWSTATE = StringRegExp(StringReplace($http, @CRLF, ""), 'name="__VIEWSTATE" id="__VIEWSTATE" value="(.*?)"', 3)[0]
+			$__VIEWSTATE = StringRegExp($http, 'name="__VIEWSTATE" id="__VIEWSTATE" value="(.*?)"', 3)[0]
 
 			GUICtrlSetData($edittxt, '')
 			_Text("[CAPTCHA] Vượt captcha thành công")
