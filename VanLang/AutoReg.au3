@@ -260,7 +260,11 @@ Func _Login($times = 0)
 	If (StringInStr($http, "The service is unavailable") > 0) Then
 		_Text("[LOGIN] Hệ thống quá tải, đang thử lại lần " & $times + 1 & "/" & $MAX_TIMES)
 		_Login($times + 1)
-	EndIf
+	Else
+
+
+
+
 
 	If (StringInStr($http, "ctl00_ContentPlaceHolder1_ctl00_lblError") > 0) Then
 
@@ -320,7 +324,7 @@ Func _Login($times = 0)
 			_DisableInput(1)
 		EndIf
 	EndIf
-
+	EndIf
 	Return False
 EndFunc   ;==>_Login
 
