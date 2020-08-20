@@ -172,7 +172,7 @@ Func _Check()
 EndFunc   ;==>_Check
 
 
-Func _Reg($m, $id, $th = '  ')
+Func _Reg($m, $id, $th = '')
 	Sleep($_SLEEP)
 
 	_Text("[REG] Đang tiến hành đăng ký môn " & $m & '-' & $id & '-' & $th)
@@ -259,7 +259,12 @@ Func _Login($times = 0)
 
 	$http = _HttpRequest(2, "/default.aspx?page=dangnhap", $sDataToSend, $_COOOKIE)
 
-	$__VIEWSTATE = StringRegExp($http, 'name="__VIEWSTATE" id="__VIEWSTATE" value="(.*?)"', 3)[0]
+	If (StringInStr($http, "The service is unavailable") > 0) Then
+		_Text("[LOGIN] Hệ thống quá tải, đang thử lại lần " & $times + 1 & "/" & $MAX_TIMES)
+		_Login($times + 1)
+	Else
+
+
 
 	If (StringInStr($http, "ctl00_ContentPlaceHolder1_ctl00_lblError") > 0) Then
 
@@ -289,6 +294,7 @@ Func _Login($times = 0)
 		EndIf
 
 	ElseIf (StringInStr($http, "ctl00_Header1_Logout1_lbtnChangePass") > 0) Then
+		$__VIEWSTATE = StringRegExp($http, 'name="__VIEWSTATE" id="__VIEWSTATE" value="(.*?)"', 3)[0]
 		$tach = StringRegExp($http, 'style="color:#FF3300;font-size:12px;font-weight:bold;">Chào (.*?)<', 3)
 
 		If (UBound($tach) <= 0) Then Return _Login()

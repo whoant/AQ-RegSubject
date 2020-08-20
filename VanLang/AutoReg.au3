@@ -171,7 +171,7 @@ Func _Check()
 EndFunc   ;==>_Check
 
 
-Func _Reg($m, $id, $th = '  ')
+Func _Reg($m, $id, $th = '')
 	Sleep($_SLEEP)
 
 	_Text("[REG] Đang tiến hành đăng ký môn " & $m & '-' & $id & '-' & $th)
@@ -261,10 +261,6 @@ Func _Login($times = 0)
 		_Text("[LOGIN] Hệ thống quá tải, đang thử lại lần " & $times + 1 & "/" & $MAX_TIMES)
 		_Login($times + 1)
 	Else
-
-
-
-
 
 	If (StringInStr($http, "ctl00_ContentPlaceHolder1_ctl00_lblError") > 0) Then
 
